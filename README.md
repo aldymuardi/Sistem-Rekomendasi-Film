@@ -55,3 +55,107 @@ Selain content-based filtering, penulis juga mengembangkan model collaborative f
 7. Evaluasi dan Peningkatan Model
 
 Setelah mengembangkan kedua model, penulis melakukan evaluasi untuk mengukur kinerja mereka. Model tersebut diperbaiki dan dioptimalkan dengan mengadaptasi feedback dan rekomendasi dari pengguna untuk meningkatkan akurasi dan relevansi rekomendasi.
+
+## _Data Understanding_
+Dataset yang digunakan dalam proyek ini merupakan data rekomendasi film. Dataset ini dapat diunduh di [Film Recomendation](https://www.kaggle.com/datasets/uttam94/recommendation). Pada dataset tersebut terdapat 2 file dengan format .csv yang terdiri dari movies.csv dan ratings.csv.
+
+### Variabel-variabel Dataset
+1. movies.csv
+
+```
+RangeIndex: 9742 entries, 0 to 9741
+Data columns (total 3 columns):
+ #   Column   Non-Null Count  Dtype 
+---  ------   --------------  ----- 
+ 0   movieId  9742 non-null   int64 
+ 1   title    9742 non-null   object
+ 2   genres   9742 non-null   object
+dtypes: int64(1), object(2)
+```
+* moviesId = ID film
+* title = Judul film
+* genres = genre atau kategori film
+
+2. ratings.csv
+```
+RangeIndex: 100836 entries, 0 to 100835
+Data columns (total 4 columns):
+ #   Column     Non-Null Count   Dtype  
+---  ------     --------------   -----  
+ 0   userId     100836 non-null  int64  
+ 1   movieId    100836 non-null  int64  
+ 2   rating     100836 non-null  float64
+ 3   timestamp  100836 non-null  int64  
+dtypes: float64(1), int64(3)
+```
+* userId = ID user
+* moviesId = ID film yang telah ditonton
+* rating = Rating film
+* timestamp = Waktu ketika _user_ melakukan penilaian
+
+### Memahami Isi Dataset
+1. Mengetahui jumlah dan tipe dari dataset
+
+Untuk mengentahui informasi dari suatu _data frame_ dapat menggunakan fungsi pandas, yakni `df.info()`
+
+2. Mengetahui nilai unik dataset
+
+Berikut nilai unik yang didapatkan
+
+```
+Banyak movie dalam ratings : 9724
+Banyak user dalam ratings : 610
+```
+3. mengetahui jumlah rating
+
+Berikut total rating pada setiap film
+**movieId**|**userId**|**rating**|**timestamp**
+:-----:|:-----:|:-----:|:-----:	
+1|65904|843.0|242914455479
+2|36251|377.5|124938583322
+3|14747|169.5|52265734386
+4|1539|16.5|6290052048
+5|14679|150.5|48640552594
+...|...|...|...
+193581|184|4.0|1537109082
+193583|184|3.5|1537109545
+193585|184|3.5|1537109805
+193587|184|3.5|1537110021
+193609|331|4.0|1537157606
+
+## _Data Preparation_
+### Menghapus _Missing Value_
+
+_Missing value_ atau nilai yang hilang pada dataset adalah kondisi di mana suatu observasi atau entri dalam dataset tidak memiliki nilai atau informasi yang valid atau lengkap untuk atribut tertentu. Dalam bahasa lain, missing value adalah bagian dari data yang kosong atau tidak diisi.
+
+Berikut jumlah nilai kosong pada setiap variabel:
+```
+userId       0
+movieId      0
+rating       0
+timestamp    0
+title        0
+genres       0
+dtype: int64
+```
+
+### Menghapus Fitur Yang Tidak Diperlukan
+
+Dari fitur yang terdapat pada file ratings.csv, terdapat fitur yang tidak diperlukan, yakni fitur timestap, untuk menghilangkan fitur tersebut dapat menggunakan fungsi `drop()`. Berikut rating setelah fitur timestap dihapus.
+
+Berikut total rating pada setiap film
+**#**|**userId**|**movieId**|**rating**
+:-----:|:-----:|:-----:|:-----:
+0|1|1|4.0
+1|1|3|4.0
+2|1|6|4.0
+3|1|47|5.0
+4|1|50|5.0
+...|...|...|...
+100831|610|166534|4.0
+100832|610|168248|5.0
+100833|610|168250|5.0
+100834|610|168252|5.0
+100835|610|170875|3.0
+     
+### Menghapus Film Yang Tidak Ada Genre
